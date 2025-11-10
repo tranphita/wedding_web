@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gallery - Minh Hảo & Phi Ta</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -160,6 +161,7 @@
             max-height: 80vh;
             object-fit: contain;
             border-radius: 8px;
+            transition: opacity 0.3s ease;
         }
 
         .lightbox-close {
@@ -280,6 +282,12 @@
 </head>
 
 <body>
+    <!-- Background Music - Auto play -->
+    <audio id="background-music" autoplay loop>
+        <source src="music/wedding-song.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
     <!-- Gallery Page -->
     <div class="gallery-page-container">
         <div class="gallery-page-header">
@@ -313,6 +321,29 @@
     </div>
 
     <script>
+        // Auto-play music - Start immediately
+        const music = document.getElementById('background-music');
+        if (music) {
+            music.volume = 0.3; // Set volume to 30%
+            
+            // Try to play immediately
+            music.play().catch(() => {
+                // If autoplay blocked, play on any interaction
+                const startMusic = () => {
+                    music.play().catch(() => {});
+                    document.removeEventListener('click', startMusic);
+                    document.removeEventListener('touchstart', startMusic);
+                    document.removeEventListener('keydown', startMusic);
+                    document.removeEventListener('scroll', startMusic);
+                };
+                
+                document.addEventListener('click', startMusic);
+                document.addEventListener('touchstart', startMusic);
+                document.addEventListener('keydown', startMusic);
+                document.addEventListener('scroll', startMusic);
+            });
+        }
+
         // Gallery data - all images from the images folder
         let galleryImages = [
             'images/1-TED_9722.jpg',
@@ -365,6 +396,21 @@
                 img.alt = `Wedding photo ${index + 1}`;
                 img.loading = 'lazy';
                 img.setAttribute('data-src', imageSrc);
+                
+                // Add error handling with retry
+                let retryCount = 0;
+                img.onerror = function() {
+                    if (retryCount < 3) {
+                        retryCount++;
+                        setTimeout(() => {
+                            img.src = imageSrc + '?retry=' + retryCount;
+                        }, 1000 * retryCount);
+                    } else {
+                        // Show placeholder if all retries fail
+                        wrapper.style.background = 'linear-gradient(135deg, #f5f1ed 0%, #e8e3dd 100%)';
+                        wrapper.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;font-size:14px;">Không thể tải ảnh</div>';
+                    }
+                };
 
                 wrapper.appendChild(img);
                 galleryGrid.appendChild(wrapper);
@@ -386,7 +432,26 @@
 
         function updateLightboxImage() {
             const lightboxImg = document.getElementById('lightbox-image');
-            lightboxImg.src = galleryImages[currentImageIndex];
+            const newSrc = galleryImages[currentImageIndex];
+            
+            // Show loading state
+            lightboxImg.style.opacity = '0.5';
+            
+            // Preload image before showing
+            const preloadImg = new Image();
+            preloadImg.onload = function() {
+                lightboxImg.src = newSrc;
+                lightboxImg.style.opacity = '1';
+            };
+            preloadImg.onerror = function() {
+                // Retry loading
+                setTimeout(() => {
+                    lightboxImg.src = newSrc;
+                    lightboxImg.style.opacity = '1';
+                }, 500);
+            };
+            preloadImg.src = newSrc;
+            
             document.getElementById('lightbox-current').textContent = currentImageIndex + 1;
         }
 

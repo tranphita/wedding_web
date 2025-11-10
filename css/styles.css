@@ -15,7 +15,7 @@ body {
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 70px 20px;
 }
 
 /* Header Section */
@@ -111,6 +111,30 @@ body {
     color: #8f0000;
     line-height: 1.8;
     font-weight: bold;
+}
+
+.map-link {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 8px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #d4a574 0%, #c89666 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(212, 165, 116, 0.3);
+}
+
+.map-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(212, 165, 116, 0.5);
+}
+
+.map-link svg {
+    flex-shrink: 0;
 }
 
 /* Story Section */
@@ -325,8 +349,8 @@ body {
 
 .rsvp-flower-top {
     position: absolute;
-    top: -40px;
-    right: -100px;
+    top: -70px;
+    right: -80px;
     width: 300px;
     height: auto;
     object-fit: contain;
@@ -435,7 +459,7 @@ body {
     .flower-top-right {
         width: 120px !important;
         height: 73px !important;
-        top: 150px !important;
+        top: 490px !important;
         right: -30px !important;
     }
 
@@ -526,11 +550,23 @@ body {
     .rsvp-leaf-right {
         display: none;
     }
+
+    .form-flower-left {
+        width: 100px !important;
+        top: -15px !important;
+        left: -20px !important;
+    }
+
+    .form-flower-right {
+        width: 110px !important;
+        top: -10px !important;
+        right: -20px !important;
+    }
 }
 
 @media (max-width: 480px) {
     .container {
-        padding: 20px 12px;
+        padding: 50px 12px;
     }
 
     .story-title {
@@ -566,6 +602,18 @@ body {
     .rsvp-button {
         padding: 10px 25px;
         font-size: 11px;
+    }
+
+    .form-flower-left {
+        width: 70px;
+        top: -10px;
+        left: -10px;
+    }
+
+    .form-flower-right {
+        width: 80px !important;
+        top: -5px;
+        right: -10px;
     }
 }
 
